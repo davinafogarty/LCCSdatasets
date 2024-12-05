@@ -1,0 +1,54 @@
+import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+import matplotlib.pyplot as plt
+
+# Read the data from a CSV file
+file_path = "AppleSales.csv" # Update with your file's path
+df = pd.read_csv(file_path)
+
+y=2024
+# Data Cleaning: Remove $ and commas, convert to numeric
+for col in df.columns[1:]:  # Exclude 'Product' column
+    df[col] = df[col].replace({'\$': '', ',': ''}, regex=True).astype(float)
+
+# Exclude Total row for product-level analysis
+product_sales = df[df["Product"] != "Total net sales"]
+
+# Extract total sales row for analysis
+total_sales = df[df["Product"] == "Total net sales"].iloc[0, 1:]
+total_sales_dict = total_sales.to_dict()
+
+# Calculate percentage contribution by product
+for year in ["2024 Sales", "2023 Sales", "2022 Sales","2021 Sales", "2020 Sales", "2019 Sales","2018 Sales","2017 Sales", "2016 Sales", "2015 Sales"]:
+    product_sales[f"{year} Percentage"] = (product_sales[year] / total_sales[year]) * 100
+
+# Print summary statistics
+print("Total Sales by Year:")
+while y>2014:
+    for i in total_sales_dict:
+        print(f"{y} : ${round(total_sales_dict[i],2)}")
+        y-=1
+#print(total_sales_dict)
+print("\nPercentage Contribution by Product (2024):")
+print(product_sales[["Product", "2024 Sales Percentage"]])
+
+# Visualization 1: Sales by Product for 2024
+plt.figure(figsize=(10, 6))
+plt.bar(product_sales["Product"], product_sales["2024 Sales"], color='skyblue')
+plt.title("Sales by Product (2024)")
+plt.ylabel("Sales (in $)")
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Visualization 2: Year-over-Year Comparison
+plt.figure(figsize=(10, 6))
+years = ["2015","2016","2017","2018", "2019", "2020", "2021","2022", "2023", "2024"]
+for index, row in product_sales.iterrows():
+    plt.plot(years, row[years], marker='o', label=row["Product"])
+plt.title("Year to Year Sales Comparison")
+plt.ylabel("$ Sales (in millions)")
+plt.legend()
+plt.tight_layout()
+plt.show()
+
