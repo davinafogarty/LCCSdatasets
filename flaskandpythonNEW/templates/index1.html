@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote for Your Favorite Color</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 1.2em;
+            color: #555;
+        }
+        select {
+            padding: 5px;
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #voteCounts {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        #voteCounts p {
+            font-size: 1.1em;
+            color: #333;
+        }
+    </style>
+    <script>
+        async function submitVote(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById('voteForm'));
+            const response = await fetch('/vote', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (response.ok) {
+                const votes = result.votes;
+                document.getElementById('voteCounts').innerHTML = `
+                    <p>Red: ${votes.red}</p>
+                    <p>Blue: ${votes.blue}</p>
+                    <p>Green: ${votes.green}</p>
+                    <p>Yellow: ${votes.yellow}</p>
+                `;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Vote for Your Favorite Color</h1>
+    <form id="voteForm" onsubmit="submitVote(event)">
+        <label for="color">Choose a color:</label>
+        <select name="color" id="color" required>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="voteCounts">
+        <h2>Current Votes</h2>
+        <p>Red: 0</p>
+        <p>Blue: 0</p>
+        <p>Green: 0</p>
+        <p>Yellow: 0</p>
+    </div>
+</body>
+</html>
