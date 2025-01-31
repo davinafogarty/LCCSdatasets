@@ -1,1 +1,30 @@
 
+''' pandas is a python library used for working with data sets
+It is useful for cleaning, processing, analysing and manipulating data sets
+It is named after PANelDAta and was created by Wes McKinney in 2008'''
+
+
+import pandas
+#def fill_missing(row):
+    #total=row.sum()
+    #missing = row.isnull().sum
+    #if missing>0:
+        #fill_value = (100-total)/missing
+        #row = row.fillna(fill_value)
+   # return row
+        
+df = pandas.read_csv("homelessdata.csv") #data frame
+#df = df.dropna() # drop all empty cells (na)
+#df = df.fillna(" ") #fill all empty cells (na) with " " (empty cell)
+df = df.rename(columns={"Number of people with citizenship Irish":"Irish", "Number of people with citizenship EEA/Uk":"European","Number of people with citizenship Non-EEA":"Non-European"})
+df=df.drop(columns=['Number of Adults in Families','Number of Dependants in Families']) #drops entire columns
+#df=df.apply(fill_missing, axis=1)
+print(df.columns)
+
+#df["Primary Industry"] = df["Primary Industry"].apply(lambda x: 0 if x == 'Agriculture/Manufacturing' else 1)
+
+print(df["Total Adults"])
+
+df.to_csv('cleaned_data.csv', index=False)
+
+
